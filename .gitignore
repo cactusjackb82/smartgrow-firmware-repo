@@ -1,0 +1,27 @@
+# credentials – never commit
+firmware/config.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# MicroPython bytecode
+*.mpy
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Logs
+logs/
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db

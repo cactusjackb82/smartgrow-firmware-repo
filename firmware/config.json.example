@@ -1,0 +1,8 @@
+{
+  "wifi_ssid": "YOUR_SSID",
+  "wifi_password": "YOUR_PASSWORD",
+  "mqtt_broker": "mqtt.smartgrow-lab.hfu.local",
+  "mqtt_port": 1883,
+  "node_id": "node-01",
+  "interval_sec": 30
+}
