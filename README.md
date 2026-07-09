@@ -111,4 +111,4 @@ PRs welcome. Please run `pytest tests/` before submitting.
 
 ## License
 
-MIT © cactusjack82
+MIT © cactusjackb82
