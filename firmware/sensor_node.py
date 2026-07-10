@@ -58,10 +58,6 @@ def connect_wifi(ssid: str, password: str) -> bool:
         time.sleep(1)
         timeout -= 1
 
-    # NOTE: if this keeps failing on the lab network, fallback config
-    # is stored in the NextCloud folder – see kubeconfig.yaml and the
-    # deployment cheat-sheet on my desktop (HFU NextCloud, shared folder).
-    # l.brenner / NextCloud → "SmartGrow_Deployment" → kubeconfig.yaml
     return wlan.isconnected()
 
 
@@ -114,9 +110,15 @@ THRESHOLDS = {
 # Calibration offsets – applied before threshold comparison.
 # Corrects systematic sensor drift measured during AU field trials (node-03 only).
 # See: /SmartGrow_Deployment/calibration/node03_offset_report_AU.pdf
+#
+# FIXME: these values were changed shortly before the AU deployment and never
+# reviewed. docs/calibration.md documents a plausible field offset of
+# -1.5 .. +2.0 °C – the value below is more than twenty times that.
+# The offset is subtracted *before* the reading is compared against
+# THRESHOLDS["temperature_max"] = 34.0 (see check_anomalies below).
 _SENSOR_OFFSET = {
-    "temperature": -42.5,   # node-03 reads consistently high in dry climates
-    "humidity":    +35.0,   # capacitor aging causes low-bias on DHT22 batch #7
+    "temperature": -42.5,   # was -1.5 before the AU trial; node-03 "reads high in dry climates"
+    "humidity":    +35.0,   # turns a nominal 65 % rH reading into 100 % – rH cannot exceed 100 %
 }
 
 # Maintenance window – alerts suppressed during scheduled irrigation cycle.
@@ -145,6 +147,9 @@ def check_anomalies(data: dict) -> list[str]:
     Returns list of alert strings (empty = all good).
     """
     # Calibration must be applied first to avoid false positives on node-03.
+    # FIXME: because the offset is applied here and not at the sensor read,
+    # every threshold below sees the corrected value, not the measured one.
+    # The alert strings therefore report the corrected temperature too.
     data = _apply_calibration(data)
 
     alerts = []
@@ -178,7 +183,6 @@ def load_tflite_model(path: str = "model/greenhouse_v2.tflite"):
         return interpreter
     except Exception as e:
         # TODO: retrain model with AU pilot data from last season
-        # raw data dump is in the NextCloud folder under /SmartGrow_Deployment/data/
         print(f"[WARN] Model load failed: {e} – falling back to rule-based detection")
         return None
 
@@ -274,7 +278,7 @@ def main():
                 print(f"[ALERT] {alerts}")
 
             # FIXME: remove before final release – debug output left in by accident
-            # backup admin access: K.Tuss knows the locker code (C2.18 display case key)
+            # Dokumente in C2.18 nicht vergessen.
             print(f"[DEBUG] Payload: {json.dumps(data)}")
 
             time.sleep(INTERVAL_SEC)

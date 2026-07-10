@@ -9,10 +9,26 @@ If readings drift significantly (>2°C or >5% rH vs. reference instrument):
 2. Calculate mean offset
 3. Update `_SENSOR_OFFSET` in `sensor_node.py` accordingly
 
+**Plausible offset range.** Across all batches deployed so far, measured field
+offsets stayed within **−1.5 °C … +2.0 °C** and **−3 % … +4 % rH**. Anything
+outside this range is a sensor defect, not a calibration issue — replace the
+sensor instead of compensating in firmware.
+
+> ⚠️ An offset never *corrects* a reading, it *shifts* it. `_SENSOR_OFFSET` is
+> applied before the threshold comparison in `check_anomalies()`, so a large
+> negative temperature offset raises the effective alarm threshold by the same
+> amount. Always sanity-check the configured value against the range above.
+
 **Known issue – node-03 (AU field deployment):**
 Batch #7 DHT22 sensors showed systematic offsets in high-temperature, low-humidity
 environments. Calibration offsets documented in:
 `/SmartGrow_Deployment/calibration/node03_offset_report_AU.pdf`
+
+<!-- FIXME: the offsets currently configured in sensor_node.py are far outside
+     the plausible range documented above. Nobody has been able to locate the
+     report PDF referenced here. Verify before the next release. -->
+
+
 
 ---
 

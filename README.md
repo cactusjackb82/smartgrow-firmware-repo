@@ -103,7 +103,6 @@ The anomaly detection runs in two layers:
 ## Related
 
 - Project website: [smartgrow-lab.hfu.local](http://smartgrow-lab.hfu.local)
-- Deployment: Kubernetes @ HFU (kubeconfig in shared NextCloud folder)
 - Dashboard: Grafana (internal HFU network)
 
 ## Contributing
