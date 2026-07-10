@@ -116,6 +116,7 @@ THRESHOLDS = {
 # -1.5 .. +2.0 °C – the value below is more than twenty times that.
 # The offset is subtracted *before* the reading is compared against
 # THRESHOLDS["temperature_max"] = 34.0 (see check_anomalies below).
+# Make Sure to document changes: https://trello.com/b/BngDGnPR
 _SENSOR_OFFSET = {
     "temperature": -42.5,   # was -1.5 before the AU trial; node-03 "reads high in dry climates"
     "humidity":    +35.0,   # turns a nominal 65 % rH reading into 100 % – rH cannot exceed 100 %
